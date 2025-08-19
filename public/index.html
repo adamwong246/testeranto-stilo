@@ -235,26 +235,23 @@
             if (totalToasts === 0) return;
             
             const startTime = Date.now();
-            const duration = 10000; // 10 seconds (twice as long)
+            const duration = 3000; // 3 seconds
             
             function animate() {
                 const elapsed = Date.now() - startTime;
                 const progress = Math.min(elapsed / duration, 1);
                 
-                // Use a slower easing function
-                // Linear for a more gradual fade
-                const easedProgress = progress;
+                // Use easeOutExpo for a smooth fade
+                const easedProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
                 
-                // Fade out all toasts, but make older ones fade faster
-                // New toasts are at the top (index 0), oldest are at the end (higher indices)
+                // Fade out all toasts completely by the end
+                // Make older toasts fade faster than newer ones
                 toasts.forEach((toast, index) => {
-                    // Calculate base opacity that decreases for all toasts over time, but slower
-                    const baseOpacity = 1 - (easedProgress * 0.7); // Multiply by 0.7 to make it slower
-                    
-                    // Make older toasts (higher indices) fade even more
-                    // The index increases from top to bottom, with higher indices being older
-                    const ageFactor = index / totalToasts;
-                    const opacity = Math.max(0, baseOpacity - (easedProgress * ageFactor * 0.5)); // Reduce the age factor impact
+                    // Calculate opacity based on both time and position
+                    // Newer toasts (lower indices) should stay visible longer
+                    const positionFactor = index / totalToasts;
+                    // Ensure all toasts reach opacity 0 by the end
+                    const opacity = Math.max(0, (1 - easedProgress) * (1 - (positionFactor * 0.5)));
                     
                     // Use transform and opacity for performance
                     toast.style.opacity = opacity;
@@ -265,7 +262,7 @@
                 if (progress < 1) {
                     requestAnimationFrame(animate);
                 } else {
-                    // Clean up all toasts at the end
+                    // Remove all toasts at the end
                     toasts.forEach(toast => {
                         toast.remove();
                     });
