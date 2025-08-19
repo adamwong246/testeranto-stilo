@@ -1,0 +1,11 @@
+{
+  "name": "stilo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "adam wong <adamwong246@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "bootstrap": "^5.3.7",
+    "sass": "^1.90.0"
+  }
+}
