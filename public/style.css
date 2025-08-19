@@ -1,0 +1,243 @@
+@font-face {
+  font-family: "M PLUS Rounded 1c";
+  src: url("/fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-Thin.ttf") format("truetype");
+  font-weight: 100;
+  font-style: normal;
+}
+@font-face {
+  font-family: "M PLUS Rounded 1c";
+  src: url("/fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: "M PLUS Rounded 1c";
+  src: url("/fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "M PLUS Rounded 1c";
+  src: url("/fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: "M PLUS Rounded 1c";
+  src: url("/fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: "M PLUS Rounded 1c";
+  src: url("/fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-ExtraBold.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+}
+@font-face {
+  font-family: "M PLUS Rounded 1c";
+  src: url("/fonts/M_PLUS_Rounded_1c/MPLUSRounded1c-Black.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+}
+tr:last-child td {
+  border-bottom: none;
+}
+
+pre {
+  white-space: pre-wrap;
+  /* Preserve whitespace and allow wrapping */
+  word-wrap: break-word;
+  /* Break long words to wrap */
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+h3 {
+  font-size: 1rem;
+}
+
+table,
+pre,
+p,
+pre,
+#container pre[class*=language-] {
+  margin-left: 2rem;
+  margin-right: 2rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+table,
+tr {
+  background-color: var(--semi-trans-bg);
+  border: 2px solid rgba(255, 255, 255, 0.352);
+}
+
+td {
+  padding: 0.5rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.352);
+}
+
+body {
+  font-family: "M PLUS Rounded 1c", sans-serif;
+  color: var(--dark);
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  position: relative;
+}
+
+h1:first-child {
+  margin-top: 0;
+  padding-top: 0.5em;
+}
+
+code {
+  background-color: var(--light);
+  padding: 0.2em 0.4em;
+  font-family: "JetBrains Mono", monospace;
+}
+
+/* Prism.js overrides using official color scheme */
+pre[class*=language-] {
+  background-color: var(--semi-trans-bg);
+  border: 2px solid rgba(255, 255, 255, 0.352);
+  margin: 1em 0;
+  overflow: auto;
+  position: relative;
+}
+
+pre code {
+  padding: 0 !important;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: var(--bg-sunrise2);
+  font-style: italic;
+}
+
+.token.punctuation {
+  color: var(--dark);
+  opacity: 0.7;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: var(--yellow);
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: var(--green);
+}
+
+.token.operator,
+.token.entity,
+.token.url,
+.language-css .token.string,
+.style .token.string {
+  color: var(--bg-end);
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: var(--bg-sunrise);
+}
+
+.token.function,
+.token.class-name {
+  color: var(--bg-end);
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  color: var(--yellow);
+}
+
+/* Line numbers */
+.line-numbers .line-numbers-rows {
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.line-numbers-rows > span:before {
+  color: var(--dark);
+}
+
+pre {
+  background-color: var(--dark);
+  color: white;
+  padding: 1em;
+  overflow-x: auto;
+}
+
+/* Floating animation for key elements */
+/* Glow effect for code blocks */
+pre {
+  background-color: rgba(41, 47, 54, 0.2862745098);
+  border: 2px solid rgba(255, 255, 255, 0.352);
+  padding: 1.25em;
+  overflow-x: auto;
+  color: var(--dark);
+  line-height: 1.5;
+  /* margin: 1.5rem 0; */
+  /* box-shadow: 0 4px 6px rgb(255, 255, 255, 0.5); */
+}
+
+pre code {
+  background-color: transparent;
+  padding: 0;
+  font-size: 0.95em;
+}
+
+table.table,
+th,
+tr,
+td {
+  background-color: var(--semi-trans-bg) !important;
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.footer {
+  background-color: rgba(var(--primary-rgb), 0.1);
+  margin: 0.5rem;
+  padding: 0.5rem;
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  transition: all 0.5s ease;
+  border-radius: 4px;
+  transform: scale(1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  overflow: hidden;
+  z-index: 1000;
+  isolation: isolate;
+}
+
+/*# sourceMappingURL=style.css.map */

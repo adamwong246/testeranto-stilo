@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="/style.css" rel="stylesheet">
+</head>
+<body class="dashboard">
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>Dashboard</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="active"><a href="#overview">Overview</a></li>
+                <li><a href="#analytics">Analytics</a></li>
+                <li><a href="#customers">Custers</a></li>
+                <li><a href="#orders">Orders</a></li>
+                <li><a href="#products">Products</a></li>
+                <li><a href="#settings">Settings</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <header class="top-bar">
+            <div class="search-bar">
+                <input type="text" placeholder="Search...">
+            </div>
+            <div class="user-menu">
+                <span class="notification-badge">3</span>
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23ccc'/%3E%3Ctext x='16' y='22' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14' fill='white'%3EU%3C/text%3E%3C/svg%3E" alt="User profile">
+            </div>
+        </header>
+
+        <div class="content-area">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Revenue</h3>
+                    <p class="stat-value">$24,563</p>
+                    <p class="stat-change">+12% from last month</p>
+                </div>
+                <div class="stat-card">
+                    <h3>New Customers</h3>
+                    <p class="stat-value">1,243</p>
+                    <p class="stat-change">+8% from last month</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Active Users</h3>
+                    <p class="stat-value">8,752</p>
+                    <p class="stat-change">+3% from last month</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Conversion Rate</h3>
+                    <p class="stat-value">3.2%</p>
+                    <p class="stat-change">-0.5% from last month</p>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h4>Revenue Overview</h4>
+                    <div class="chart-placeholder">
+                        <p>Revenue chart would be displayed here</p>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <h4>User Activity</h4>
+                    <div class="chart-placeholder">
+                        <p>Activity chart would be displayed here</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recent-activity">
+                <h4>Recent Orders</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#ORD-001</td>
+                            <td>John Doe</td>
+                            <td>Aug 19, 2024</td>
+                            <td>$249.99</td>
+                            <td><span class="status completed">Completed</span></td>
+                        </tr>
+                        <tr>
+                            <td>#ORD-002</td>
+                            <td>Jane Smith</td>
+                            <td>Aug 18, 2024</td>
+                            <td>$149.99</td>
+                            <td><span class="status pending">Pending</span></td>
+                        </tr>
+                        <tr>
+                            <td>#ORD-003</td>
+                            <td>Bob Johnson</td>
+                            <td>Aug 17, 2024</td>
+                            <td>$499.99</td>
+                            <td><span class="status processing">Processing</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

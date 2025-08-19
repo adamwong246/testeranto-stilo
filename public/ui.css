@@ -1,0 +1,304 @@
+/* Ultra minimal UI styling - raw and functional */
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden;
+    font-family: sans-serif;
+    font-size: 13px;
+}
+
+#app {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar - very basic */
+#sidebar {
+    width: 200px;
+    min-width: 0;
+    max-width: 50%;
+    border-right: 1px solid #aaa;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    resize: none;
+    transition: width 0.1s ease;
+}
+
+/* Collapsed state */
+#sidebar.collapsed {
+    width: 0;
+    border-right: none;
+}
+
+#file-tree {
+    overflow-y: auto;
+    padding: 4px;
+}
+
+#file-tree ul {
+    list-style-type: none;
+    padding-left: 8px;
+    margin: 0;
+}
+
+#file-tree .nav-link {
+    display: block;
+    padding: 1px 3px;
+    text-decoration: none;
+    color: #000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#file-tree .nav-link:hover {
+    background: #ddd;
+}
+
+/* Style for folder links */
+.folder-link {
+    user-select: none;
+    position: relative;
+    padding-left: 12px !important;
+}
+
+/* Folder indicator - closed state (default) */
+.folder-link::before {
+    content: '▶';
+    position: absolute;
+    left: 0;
+    font-size: 10px;
+    top: 3px;
+}
+
+/* Folder indicator - open state */
+.folder-link.open::before {
+    content: '▼';
+}
+
+/* Ensure folder contents are visible by default */
+#file-tree ul ul {
+    display: block;
+}
+
+/* Hide folder contents when parent has 'closed' class */
+.folder-closed > ul {
+    display: none;
+}
+
+/* Resize handle - always visible and easier to grab */
+#resize-handle {
+    width: 8px;
+    background: #ccc;
+    cursor: col-resize;
+    transition: background-color 0.2s;
+    z-index: 100;
+    position: relative;
+    flex-shrink: 0;
+}
+
+#resize-handle:hover {
+    background: #999;
+}
+
+/* When resizing, make the handle more visible */
+.resizing #resize-handle {
+    background: #999;
+}
+
+/* Indicate when sidebar is near collapse threshold */
+#sidebar[style*="width: 0"] ~ #resize-handle,
+#sidebar[style*="width: 0px"] ~ #resize-handle,
+#sidebar[style*="width:1"] ~ #resize-handle,
+#sidebar[style*="width:2"] ~ #resize-handle,
+#sidebar[style*="width:3"] ~ #resize-handle,
+#sidebar[style*="width:4"] ~ #resize-handle,
+#sidebar[style*="width:5"] ~ #resize-handle,
+#sidebar[style*="width:6"] ~ #resize-handle,
+#sidebar[style*="width:7"] ~ #resize-handle,
+#sidebar[style*="width:8"] ~ #resize-handle,
+#sidebar[style*="width:9"] ~ #resize-handle,
+#sidebar[style*="width:10"] ~ #resize-handle,
+#sidebar[style*="width:11"] ~ #resize-handle,
+#sidebar[style*="width:12"] ~ #resize-handle,
+#sidebar[style*="width:13"] ~ #resize-handle,
+#sidebar[style*="width:14"] ~ #resize-handle,
+#sidebar[style*="width:15"] ~ #resize-handle,
+#sidebar[style*="width:16"] ~ #resize-handle,
+#sidebar[style*="width:17"] ~ #resize-handle,
+#sidebar[style*="width:18"] ~ #resize-handle,
+#sidebar[style*="width:19"] ~ #resize-handle,
+#sidebar[style*="width:20"] ~ #resize-handle,
+#sidebar[style*="width:21"] ~ #resize-handle,
+#sidebar[style*="width:22"] ~ #resize-handle,
+#sidebar[style*="width:23"] ~ #resize-handle,
+#sidebar[style*="width:24"] ~ #resize-handle,
+#sidebar[style*="width:25"] ~ #resize-handle,
+#sidebar[style*="width:26"] ~ #resize-handle,
+#sidebar[style*="width:27"] ~ #resize-handle,
+#sidebar[style*="width:28"] ~ #resize-handle,
+#sidebar[style*="width:29"] ~ #resize-handle {
+    background: #ff6b6b;
+}
+
+#sidebar[style*="width: 0"] ~ #resize-handle,
+#sidebar[style*="width: 0px"] ~ #resize-handle {
+    background: #ccc;
+}
+
+/* During resize, capture mouse events on the entire document */
+.resizing {
+    cursor: col-resize;
+    user-select: none;
+}
+
+.resizing * {
+    user-select: none;
+}
+
+/* Main content area */
+#main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+#sample-container {
+    flex: 1;
+}
+
+/* Reset all styles for the iframe to ensure they don't affect its content */
+#iframe-container {
+    all: initial;
+}
+
+#sample-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+    /* Ensure no styles from parent affect the iframe */
+    display: block;
+}
+
+/* Prevent iframe from interfering with mouse events during resize */
+.resizing #sample-frame {
+    pointer-events: none;
+}
+
+/* Isolate iframe styling completely */
+#sample-container {
+    /* Reset any potential inherited styles */
+    all: initial;
+    flex: 1;
+    display: block;
+}
+
+/* Ensure no styles leak into the iframe */
+#sample-frame,
+#sample-frame body,
+#sample-frame html {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+/* Buttons - very basic */
+#menu-toggle {
+    border: 1px solid #999;
+    background: #fff;
+    cursor: pointer;
+    font-size: 12px;
+    margin: 1px;
+    padding: 1px 4px;
+}
+
+#menu-toggle:hover {
+    background: #eee;
+}
+
+/* Mobile menu */
+#menu-toggle {
+    display: none;
+}
+
+/* Toast notifications */
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* Use will-change to hint the browser for better performance */
+    will-change: transform;
+}
+
+.toast {
+    background: #333;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    max-width: 300px;
+    word-wrap: break-word;
+    /* Use will-change for performance */
+    will-change: transform, opacity;
+    /* Ensure toasts are fully opaque initially */
+    opacity: 1;
+    /* Add transform origin for scaling animation */
+    transform-origin: top center;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    /* Use transform for animations which are GPU accelerated */
+    transform: translateZ(0);
+    /* Add a fixed height to ensure consistent animation */
+    height: 20px;
+}
+
+/* Icon for toast notifications - set based on data-emoji attribute */
+.toast::before {
+    content: attr(data-emoji);
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+/* File path text */
+.toast-content {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* New toast animation - slide down from above with easeInOutElastic effect */
+@keyframes slideDown {
+    0% {
+        transform: translateY(-100%) scale(0.8);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Animate new toasts */
+.toast.new-toast {
+    animation: slideDown 0.6s ease-out forwards;
+}
+
+/* Fade out animation */
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+    }
+}
+

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>stilo</title>
+    <link href="/style.css?t=<%= Date.now() %>" rel="stylesheet">
+    <link href="/ui.css?t=<%= Date.now() %>" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation sidebar -->
+        <nav id="sidebar">
+            <div id="file-tree"></div>
+        </nav>
+        
+        <!-- Resize handle -->
+        <div id="resize-handle"></div>
+        
+        <!-- Main content -->
+        <main id="main-content">
+            <div id="sample-container">
+                <iframe id="sample-frame" sandbox="allow-same-origin"></iframe>
+            </div>
+        </main>
+        
+        <!-- Toast notifications container -->
+        <div id="toast-container"></div>
+    </div>
+
+    <script>
+        // Track if initial load has been done
+        let initialLoadDone = false;
+        
+        // Track the currently loaded sample
+        let currentSamplePath = null;
+        
+        // Resize handle functionality
+        let isResizing = false;
+
+        // Add timestamp to CSS to prevent caching
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('link[rel="stylesheet"]');
+            links.forEach(link => {
+                const url = new URL(link.href);
+                url.searchParams.set('t', Date.now());
+                link.href = url.toString();
+            });
+        });
+
+        // WebSocket connection - use wss:// if the page is served over https
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const ws = new WebSocket(`${protocol}//${window.location.host}`);
+        
+        ws.onmessage = function(event) {
+            console.log('Received message:', event.data);
+            const message = JSON.parse(event.data);
+            if (message.type === 'fileTreeUpdate') {
+                console.log('Updating file tree with data:', JSON.stringify(message.data));
+                updateFileTree(message.data);
+                
+                // Load README by default on first file tree update
+                if (!initialLoadDone) {
+                    initialLoadDone = true;
+                    loadSample('README.md');
+                }
+            } else if (message.type === 'test') {
+                console.log('Test message:', message.message);
+                showToast(`Test: ${message.message}`);
+            } else if (message.type === 'fileChanged') {
+                console.log('File changed:', message.path);
+                showToast(`File updated: ${message.path}`);
+                // If the current sample is the one that changed, reload it
+                if (currentSamplePath === message.path) {
+                    console.log('Reloading current sample');
+                    reloadCurrentSample();
+                }
+            } else if (message.type === 'styleChanged') {
+                console.log('Style changed, reloading CSS');
+                showToast('Styles updated');
+                // Reload the CSS by adding a timestamp to the URL
+                const links = document.querySelectorAll('link[rel="stylesheet"]');
+                links.forEach(link => {
+                    const url = new URL(link.href);
+                    url.searchParams.set('t', Date.now());
+                    link.href = url.toString();
+                });
+            }
+        };
+        
+        ws.onopen = function() {
+            console.log('Connected to server');
+        };
+        
+        ws.onclose = function() {
+            console.log('Disconnected from server');
+        };
+        
+        ws.onerror = function(error) {
+            console.error('WebSocket error:', error);
+        };
+
+        // Fetch and render file tree - not needed anymore, using WebSocket
+        async function loadFileTree() {
+            // This function is no longer used
+        }
+
+        function updateFileTree(fileTree) {
+            console.log('Rendering file tree with items:', fileTree.length);
+            const fileTreeElement = document.getElementById('file-tree');
+            fileTreeElement.innerHTML = '';
+            renderFileTree(fileTree, fileTreeElement);
+        }
+
+        function renderFileTree(nodes, parentElement) {
+            const ul = document.createElement('ul');
+            
+            nodes.forEach(node => {
+                const li = document.createElement('li');
+                li.className = 'nav-item';
+                
+                if (node.type === 'directory') {
+                    li.innerHTML = `
+                        <div class="nav-link folder-link" style="cursor: pointer;">
+                            <strong>${node.name}</strong>
+                        </div>
+                    `;
+                    const childUl = document.createElement('ul');
+                    childUl.className = 'nav-flex-column';
+                    // Initially show the folder contents
+                    renderFileTree(node.children, childUl);
+                    li.appendChild(childUl);
+                    
+                    // Add click handler to toggle folder
+                    const folderLink = li.querySelector('.folder-link');
+                    folderLink.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        // Toggle the 'open' class on the folder link
+                        folderLink.classList.toggle('open');
+                        // Toggle visibility of child elements
+                        childUl.style.display = childUl.style.display === 'none' ? '' : 'none';
+                    });
+                    // Initially show folders as open
+                    folderLink.classList.add('open');
+                } else {
+                    li.innerHTML = `
+                        <a class="nav-link sample-link" href="#" data-path="${node.path}">
+                            ${node.name}
+                        </a>
+                    `;
+                }
+                ul.appendChild(li);
+            });
+            parentElement.appendChild(ul);
+        }
+
+        // Load sample into iframe
+        function loadSample(path) {
+            currentSamplePath = path;
+            document.getElementById('sample-frame').src = `/sample/${path}`;
+        }
+        
+        // Function to reload the current sample
+        function reloadCurrentSample() {
+            if (currentSamplePath) {
+                // Add a timestamp to force reload
+                document.getElementById('sample-frame').src = `/sample/${currentSamplePath}?t=${Date.now()}`;
+            }
+        }
+
+        // Function to show toast notifications with appropriate emoji
+        function showToast(message) {
+            const toastContainer = document.getElementById('toast-container');
+            const existingToasts = Array.from(toastContainer.querySelectorAll('.toast'));
+            const toast = document.createElement('div');
+            toast.className = 'toast new-toast';
+            
+            // Determine emoji based on message content
+            let emoji = '📄'; // Default file emoji
+            if (message.includes('updated')) emoji = '🔄';
+            else if (message.includes('created')) emoji = '🆕';
+            else if (message.includes('deleted')) emoji = '🗑️';
+            else if (message.includes('Test:')) emoji = '🔌';
+            else if (message.includes('Styles')) emoji = '🎨';
+            
+            // Set emoji as data attribute
+            toast.dataset.emoji = emoji;
+            
+            // Create content with icon and message
+            const content = document.createElement('div');
+            content.className = 'toast-content';
+            content.textContent = message.replace(/^(Test|File|Styles).+?: /, '');
+            toast.appendChild(content);
+            
+            // Add the new toast at the top of the container
+            if (toastContainer.firstChild) {
+                toastContainer.insertBefore(toast, toastContainer.firstChild);
+            } else {
+                toastContainer.appendChild(toast);
+            }
+            
+            // Animate existing toasts down
+            existingToasts.forEach(existingToast => {
+                // Reset any existing transforms
+                existingToast.style.transform = 'translateY(0) translateZ(0)';
+                // Force reflow
+                void existingToast.offsetWidth;
+                // Animate down
+                existingToast.style.transform = 'translateY(calc(100% + 10px)) translateZ(0)';
+                existingToast.style.transition = 'transform 0.3s ease-out';
+            });
+            
+            // Add a small delay to ensure the animation plays
+            setTimeout(() => {
+                toast.classList.remove('new-toast');
+                // Reset existing toasts' transitions after animation completes
+                setTimeout(() => {
+                    existingToasts.forEach(existingToast => {
+                        existingToast.style.transition = '';
+                        existingToast.style.transform = 'translateZ(0)';
+                    });
+                }, 300);
+            }, 600);
+            
+            // Trigger the fade effect
+            triggerToastEffect();
+        }
+
+        // Function to trigger the fade effect using JavaScript
+        function triggerToastEffect() {
+            const toastContainer = document.getElementById('toast-container');
+            const toasts = toastContainer.querySelectorAll('.toast');
+            const totalToasts = toasts.length;
+            
+            if (totalToasts === 0) return;
+            
+            const startTime = Date.now();
+            const duration = 10000; // 10 seconds (twice as long)
+            
+            function animate() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Use a slower easing function
+                // Linear for a more gradual fade
+                const easedProgress = progress;
+                
+                // Fade out all toasts, but make older ones fade faster
+                // New toasts are at the top (index 0), oldest are at the end (higher indices)
+                toasts.forEach((toast, index) => {
+                    // Calculate base opacity that decreases for all toasts over time, but slower
+                    const baseOpacity = 1 - (easedProgress * 0.7); // Multiply by 0.7 to make it slower
+                    
+                    // Make older toasts (higher indices) fade even more
+                    // The index increases from top to bottom, with higher indices being older
+                    const ageFactor = index / totalToasts;
+                    const opacity = Math.max(0, baseOpacity - (easedProgress * ageFactor * 0.5)); // Reduce the age factor impact
+                    
+                    // Use transform and opacity for performance
+                    toast.style.opacity = opacity;
+                    // Slightly move faded toasts down for a smoother effect
+                    toast.style.transform = opacity > 0 ? 'translateZ(0)' : 'translateY(10px) translateZ(0)';
+                });
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    // Clean up all toasts at the end
+                    toasts.forEach(toast => {
+                        toast.remove();
+                    });
+                }
+            }
+            
+            requestAnimationFrame(animate);
+        }
+
+        // Event delegation for sample links - always works even when tree is updated
+        document.getElementById('file-tree').addEventListener('click', (e) => {
+            if (e.target.classList.contains('sample-link')) {
+                e.preventDefault();
+                loadSample(e.target.dataset.path);
+            }
+        });
+
+        // Resize handle functionality - always visible and easier to use
+        const resizeHandle = document.getElementById('resize-handle');
+        const sidebar = document.getElementById('sidebar');
+
+        resizeHandle.addEventListener('mousedown', (e) => {
+            isResizing = true;
+            document.body.classList.add('resizing');
+            
+            // Always ensure sidebar is visible when resizing starts
+            // If it's collapsed, start from 0 width
+            if (sidebar.classList.contains('collapsed')) {
+                sidebar.classList.remove('collapsed');
+                sidebar.style.width = '0';
+            }
+            
+            const startX = e.clientX;
+            const startWidth = parseInt(document.defaultView.getComputedStyle(sidebar).width, 10);
+            
+            // Add event listeners to the document to track mouse movement anywhere
+            document.addEventListener('mousemove', handleMouseMove);
+            document.addEventListener('mouseup', stopResize);
+            
+            function handleMouseMove(e) {
+                if (!isResizing) return;
+                // Calculate new width based on mouse position
+                const newWidth = startWidth + e.clientX - startX;
+                
+                // Allow any width between 0 and 50% of window width
+                if (newWidth >= 0 && newWidth <= window.innerWidth / 2) {
+                    sidebar.style.width = `${newWidth}px`;
+                }
+            }
+            
+            function stopResize() {
+                isResizing = false;
+                document.body.classList.remove('resizing');
+                document.removeEventListener('mousemove', handleMouseMove);
+                document.removeEventListener('mouseup', stopResize);
+                
+                // Snap to zero if width is below threshold (30px)
+                const currentWidth = parseInt(sidebar.style.width, 10);
+                if (currentWidth < 30) {
+                    sidebar.style.width = '0';
+                }
+            }
+            
+            e.preventDefault();
+        });
+
+        // Prevent text selection during resize
+        document.addEventListener('selectstart', (e) => {
+            if (isResizing) {
+                e.preventDefault();
+            }
+        });
+        
+        // Double click on handle to toggle between default width and collapsed
+        resizeHandle.addEventListener('dblclick', () => {
+            if (parseInt(sidebar.style.width) > 0) {
+                sidebar.style.width = '0';
+            } else {
+                sidebar.style.width = '200px';
+            }
+        });
+    </script>
+</body>
+</html>
