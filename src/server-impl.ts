@@ -26,6 +26,31 @@ export const WebSocketMessages = {
 // SCSS compilation command
 export const SCSS_COMPILE_COMMAND = 'npx sass src/style.scss public/style.css';
 
+// Function to compile SCSS using esbuild
+export async function compileSCSSWithEsbuild() {
+    try {
+        // Dynamically import esbuild and sassPlugin
+        const esbuild = require('esbuild');
+        const { sassPlugin } = require('esbuild-sass-plugin');
+        
+        await esbuild.build({
+            entryPoints: ['src/style.scss'],
+            bundle: true,
+            outfile: 'public/style.css',
+            plugins: [sassPlugin()],
+            loader: {
+                '.ttf': 'file',
+                '.woff': 'file',
+                '.woff2': 'file',
+                '.eot': 'file'
+            }
+        });
+        console.log(LogMessages.scssCompiled);
+    } catch (error) {
+        console.error(LogMessages.scssFailed, error);
+    }
+}
+
 // HTML template for README
 export function generateReadmeHtml(htmlContent: string): string {
     return `<!DOCTYPE html>

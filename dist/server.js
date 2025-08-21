@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
-const child_process_1 = require("child_process");
 const ws_1 = require("ws");
 const http_1 = require("http");
 const marked_1 = require("marked");
@@ -20,18 +19,14 @@ const PORT = 3000;
 app.use(express_1.default.static('public'));
 // Serve font files
 app.use('/fonts', express_1.default.static('fonts'));
-// Function to compile SCSS to CSS
-function compileSCSS() {
-    try {
-        (0, child_process_1.execSync)(server_impl_1.SCSS_COMPILE_COMMAND, { stdio: 'inherit' });
-        console.log(server_impl_1.LogMessages.scssCompiled);
-    }
-    catch (error) {
-        console.error(server_impl_1.LogMessages.scssFailed, error);
-    }
+// Function to compile SCSS to CSS using esbuild
+async function compileSCSS() {
+    await (0, server_impl_1.compileSCSSWithEsbuild)();
 }
 // Initial compilation
-compileSCSS();
+compileSCSS().catch(error => {
+    console.error(server_impl_1.LogMessages.scssFailed, error);
+});
 async function buildFileTree(dir, baseDir) {
     const items = [];
     const entries = fs_1.default.readdirSync(dir, { withFileTypes: true });
@@ -87,9 +82,9 @@ const styleWatcher = chokidar_1.default.watch(['src/style.scss', 'src/fonts.scss
     ignoreInitial: true
 });
 styleWatcher
-    .on('change', (path) => {
+    .on('change', async (path) => {
     console.log(server_impl_1.LogMessages.styleChanged(path));
-    compileSCSS();
+    await compileSCSS();
     // Notify clients to reload CSS
     const message = server_impl_1.WebSocketMessages.styleChanged();
     wss.clients.forEach(client => {

@@ -11,7 +11,7 @@ import {
     createRelativePath, 
     prepareFileTreeWithReadme, 
     WebSocketMessages, 
-    SCSS_COMPILE_COMMAND, 
+    compileSCSSWithEsbuild, 
     generateReadmeHtml,
     LogMessages 
 } from './server-impl';
@@ -26,18 +26,15 @@ app.use(express.static('public'));
 // Serve font files
 app.use('/fonts', express.static('fonts'));
 
-// Function to compile SCSS to CSS
-function compileSCSS() {
-    try {
-        execSync(SCSS_COMPILE_COMMAND, { stdio: 'inherit' });
-        console.log(LogMessages.scssCompiled);
-    } catch (error) {
-        console.error(LogMessages.scssFailed, error);
-    }
+// Function to compile SCSS to CSS using esbuild
+async function compileSCSS() {
+    await compileSCSSWithEsbuild();
 }
 
 // Initial compilation
-compileSCSS();
+compileSCSS().catch(error => {
+    console.error(LogMessages.scssFailed, error);
+});
 
 // Helper function to build the file tree
 interface FileNode {
@@ -112,9 +109,9 @@ const styleWatcher = chokidar.watch(['src/style.scss', 'src/fonts.scss'], {
 });
 
 styleWatcher
-    .on('change', (path) => {
+    .on('change', async (path) => {
         console.log(LogMessages.styleChanged(path));
-        compileSCSS();
+        await compileSCSS();
         // Notify clients to reload CSS
         const message = WebSocketMessages.styleChanged();
         wss.clients.forEach(client => {

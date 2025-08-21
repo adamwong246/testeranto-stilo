@@ -4,6 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LogMessages = exports.SCSS_COMPILE_COMMAND = exports.WebSocketMessages = void 0;
 exports.createRelativePath = createRelativePath;
 exports.prepareFileTreeWithReadme = prepareFileTreeWithReadme;
+exports.compileSCSSWithEsbuild = compileSCSSWithEsbuild;
 exports.generateReadmeHtml = generateReadmeHtml;
 // Helper to create a relative path from a full path and samples directory
 function createRelativePath(filePath, samplesDir, pathSep) {
@@ -27,6 +28,30 @@ exports.WebSocketMessages = {
 };
 // SCSS compilation command
 exports.SCSS_COMPILE_COMMAND = 'npx sass src/style.scss public/style.css';
+// Function to compile SCSS using esbuild
+async function compileSCSSWithEsbuild() {
+    try {
+        // Dynamically import esbuild and sassPlugin
+        const esbuild = require('esbuild');
+        const { sassPlugin } = require('esbuild-sass-plugin');
+        await esbuild.build({
+            entryPoints: ['src/style.scss'],
+            bundle: true,
+            outfile: 'public/style.css',
+            plugins: [sassPlugin()],
+            loader: {
+                '.ttf': 'file',
+                '.woff': 'file',
+                '.woff2': 'file',
+                '.eot': 'file'
+            }
+        });
+        console.log(exports.LogMessages.scssCompiled);
+    }
+    catch (error) {
+        console.error(exports.LogMessages.scssFailed, error);
+    }
+}
 // HTML template for README
 function generateReadmeHtml(htmlContent) {
     return `<!DOCTYPE html>
