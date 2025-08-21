@@ -105,7 +105,7 @@ async function broadcastFileTreeUpdate() {
 }
 
 // Watch for style.scss and imported files changes
-const styleWatcher = chokidar.watch(['style.scss', 'fonts.scss'], {
+const styleWatcher = chokidar.watch(['src/style.scss', 'src/fonts.scss'], {
     ignored: /(^|[\/\\])\../, // ignore dotfiles
     persistent: true,
     ignoreInitial: true

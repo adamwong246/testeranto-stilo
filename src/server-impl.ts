@@ -24,7 +24,7 @@ export const WebSocketMessages = {
 };
 
 // SCSS compilation command
-export const SCSS_COMPILE_COMMAND = 'npx sass style.scss public/style.css';
+export const SCSS_COMPILE_COMMAND = 'npx sass src/style.scss public/style.css';
 
 // HTML template for README
 export function generateReadmeHtml(htmlContent: string): string {

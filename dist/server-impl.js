@@ -26,7 +26,7 @@ exports.WebSocketMessages = {
     test: () => JSON.stringify({ type: 'test', message: 'Connection established' })
 };
 // SCSS compilation command
-exports.SCSS_COMPILE_COMMAND = 'npx sass style.scss public/style.css';
+exports.SCSS_COMPILE_COMMAND = 'npx sass src/style.scss public/style.css';
 // HTML template for README
 function generateReadmeHtml(htmlContent) {
     return `<!DOCTYPE html>
