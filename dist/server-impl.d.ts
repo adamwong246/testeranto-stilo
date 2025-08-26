@@ -1,0 +1,30 @@
+export declare function createRelativePath(filePath: string, samplesDir: string, pathSep: string): string;
+export declare function prepareFileTreeWithReadme(fileTree: any[]): any[];
+export declare const WebSocketMessages: {
+    fileTreeUpdate: (data: any) => string;
+    fileChanged: (path: string) => string;
+    styleChanged: () => string;
+    test: () => string;
+};
+export declare const SCSS_COMPILE_COMMAND = "npx sass src/style.scss public/style.css";
+export declare function compileSCSSWithEsbuild(): Promise<void>;
+export declare function generateReadmeHtml(htmlContent: string): string;
+export declare const LogMessages: {
+    scssCompiled: string;
+    scssFailed: string;
+    clientConnected: string;
+    clientDisconnected: string;
+    websocketError: string;
+    fileTreeError: string;
+    initialTreeError: string;
+    styleWatcherError: string;
+    watcherError: string;
+    serverRunning: (port: number) => string;
+    websocketReady: string;
+    fileAdded: (path: string) => string;
+    fileChanged: (path: string) => string;
+    fileRemoved: (path: string) => string;
+    dirAdded: (path: string) => string;
+    dirRemoved: (path: string) => string;
+    styleChanged: (path: string) => string;
+};

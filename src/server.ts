@@ -1,7 +1,6 @@
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
-import { execSync } from 'child_process';
 import { WebSocketServer } from 'ws';
 import { createServer } from 'http';
 import { marked } from 'marked';
@@ -16,10 +15,11 @@ import {
     LogMessages 
 } from './server-impl';
 
-const app = express();
-const server = createServer(app);
-const wss = new WebSocketServer({ server });
-const PORT = 3000;
+export function createFabellibro(port: number = 3000, samplesPath?: string) {
+    const app = express();
+    const server = createServer(app);
+    const wss = new WebSocketServer({ server });
+    const PORT = port;
 
 // Middleware
 app.use(express.static('public'));
@@ -72,9 +72,9 @@ async function buildFileTree(dir: string, baseDir: string): Promise<FileNode[]> 
 
 
 
-const samplesDir = path.join(__dirname, '..', 'samples');
+    const samplesDir = samplesPath || path.join(__dirname, '..', 'samples');
 
-const watcher = chokidar.watch(samplesDir, {
+    const watcher = chokidar.watch(samplesDir, {
     ignored: /(^|[\/\\])\../, // ignore dotfiles
     persistent: true,
     ignoreInitial: true
@@ -250,8 +250,28 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
 
-// Update the server to use the HTTP server
-server.listen(PORT, '0.0.0.0', () => {
-    console.log(LogMessages.serverRunning(PORT));
-    console.log(LogMessages.websocketReady);
-});
+    // Update the server to use the HTTP server
+    server.listen(PORT, '0.0.0.0', () => {
+        console.log(LogMessages.serverRunning(PORT));
+        console.log(LogMessages.websocketReady);
+    });
+
+    return {
+        app,
+        server,
+        wss,
+        close: () => {
+            watcher.close();
+            styleWatcher.close();
+            server.close();
+        }
+    };
+}
+
+// Default export
+export default createFabellibro;
+
+// If this file is run directly, start the server
+if (require.main === module) {
+    createFabellibro(3000);
+}

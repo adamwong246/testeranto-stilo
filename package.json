@@ -1,13 +1,14 @@
 {
   "name": "testeranto-stilo",
   "version": "0.0.7",
-  "main": "index.js",
+  "main": "dist/server.js",
+  "types": "dist/server.d.ts",
   "author": "adam wong <adamwong246@gmail.com>",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/server.js",
-    "dev": "tsc && node dist/server.js",
+    "fabellibro": "npm run build && node dist/server.js",
+    "dev": "npm run build && node dist/server.js",
     "watch": "tsc --watch"
   },
   "devDependencies": {
