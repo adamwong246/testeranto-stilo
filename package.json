@@ -1,6 +1,6 @@
 {
   "name": "testeranto-stilo",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "main": "dist/server.js",
   "types": "dist/server.d.ts",
   "author": "adam wong <adamwong246@gmail.com>",
