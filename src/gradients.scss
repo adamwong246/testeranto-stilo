@@ -8,7 +8,13 @@
 
 /* Gradient background classes */
 .gradient-hero {
-  background: linear-gradient(0deg, #ff3900c4 0%, #0f0746 41%, #000000 70%);
+  background: linear-gradient(0deg, #003dffdb, #0f0746 30%, #000 50%);
+  background-size: 200% 200%;
+  animation: vibrantPulse 15s ease infinite;
+}
+
+.gradient-demo {
+  background: linear-gradient(180deg, #003dffdb, #0f0746 30%, #000 50%);
   background-size: 200% 200%;
   animation: vibrantPulse 15s ease infinite;
 }
@@ -64,11 +70,7 @@
   animation: vibrantPulse 8s ease infinite;
 }
 
-.gradient-demo {
-  background: linear-gradient(180deg, #ff3900c4 0%, #0f0746 41%, #000000 70%);
-  background-size: 200% 200%;
-  animation: vibrantPulse 15s ease infinite;
-}
+
 
 @keyframes vibrantPulse {
   0%,
